@@ -7,6 +7,11 @@ import random
 import curses
 import Algofind
 
+def blockPrint():
+  sys.stdout = open(os.devnull, 'w')
+def enablePrint():
+  sys.stdout = sys.__stdout__
+
 def menu():
   print("Snake cheat for Kinu v1.0")
   print("1.) Simulation cheat")
@@ -18,6 +23,7 @@ def menu():
     makefile()
     return 1
   elif arise == "2":
+    blockPrint()
     makefile(True)
     return 2
 def makefile(*args):
@@ -78,7 +84,6 @@ def simulation(vis=True):
           if strict:
             if coordinates[0] >= sh-1 or coordinates[1] >= sw-1:
               return True
-         
           if coordinates[0] in [0,sh-1] or coordinates[1] in [0,sw-1]:
             return True
           return False
@@ -132,12 +137,12 @@ def simulation(vis=True):
           path = algo.main(terrain,(snake_body[0][0],snake_body[0][1]),(food[0],food[1]))
           m_iter = len(path)
       elif len(snake_body) <= 150:
-          path = algo.main(terrain,(snake_body[0][0],snake_body[0][1]),(food[0],food[1]))[:30]
-          m_iter = 30
-      elif len(snake_body) <= 200:
-          path = algo.main(terrain,(snake_body[0][0],snake_body[0][1]),(food[0],food[1]))[:20]
-          m_iter = 20
-      elif len(snake_body) <= 300:
+          path = algo.main(terrain,(snake_body[0][0],snake_body[0][1]),(food[0],food[1]))[:100]
+          m_iter = 100
+      elif len(snake_body) <= 500:
+          path = algo.main(terrain,(snake_body[0][0],snake_body[0][1]),(food[0],food[1]))[:50]
+          m_iter = 50
+      elif len(snake_body) <= 1000:
           path = algo.main(terrain,(snake_body[0][0],snake_body[0][1]),(food[0],food[1]))[:10]
           m_iter = 10
       else:
@@ -151,6 +156,7 @@ def simulation(vis=True):
         else:
           print("Cannot find a fix for this")
           sys.exit()
+      prev_cord = None
       for cord in path:
         new_head = cord
         if not cord:
@@ -180,13 +186,16 @@ def simulation(vis=True):
                 random.randint(1,sw-2)
                 ]
             food = nf if nf not in snake_body else None 
-            print(food)
           if vis:
             w.addch(food[0],food[1], "@", curses.color_pair(1))
         else:
           tail = snake_body.pop()
           if vis:
             w.addch(tail[0],tail[1], ' ')
+        if prev_cord and prev_cord == cord:
+          print("Skipped, duplicate coordinates")
+          continue
+        prev_cord = cord
         file.write(f"snake_bod: {snake_body}\n")
         file.write(f"Food: {food}\n")
       time_taken = time.time() - start
@@ -197,27 +206,31 @@ def simulation(vis=True):
       #time.sleep(0.01)
 
 if __name__ == "__main__":
-  rel = menu()
-  if rel == 1:
-    simulation(vis=False)
-  elif rel == 2:
-    scr = curses.initscr()
-    curses.noecho()
-    curses.cbreak()
-    csw,csh = os.get_terminal_size()
-    w = curses.newwin(csh,csw,0,0)
-    w.border('|', '|', '-', '-', '+', '+', '+', '+')
-    curses.start_color()
-    if curses.has_colors():
-      curses.use_default_colors()
-      curses.init_pair(1, curses.COLOR_RED,curses.COLOR_RED)
-      curses.init_pair(2, curses.COLOR_WHITE,curses.COLOR_WHITE)
-      curses.init_pair(3, curses.COLOR_WHITE,curses.COLOR_RED)
-      curses.init_pair(4, curses.COLOR_BLACK,curses.COLOR_WHITE)
-      curses.init_pair(5, curses.COLOR_BLACK,curses.COLOR_BLUE)
-      curses.init_pair(6, curses.COLOR_BLACK,curses.COLOR_GREEN)
-    curses.curs_set(0) 
-    curses.noecho()
-    simulation()
-    curses.reset_shell_mode()
+  try:
+    rel = menu()
+    if rel == 1:
+      simulation(vis=False)
+    elif rel == 2:
+      scr = curses.initscr()
+      curses.noecho()
+      curses.cbreak()
+      csw,csh = os.get_terminal_size()
+      w = curses.newwin(csh,csw,0,0)
+      w.border('|', '|', '-', '-', '+', '+', '+', '+')
+      curses.start_color()
+      if curses.has_colors():
+        curses.use_default_colors()
+        curses.init_pair(1, curses.COLOR_RED,curses.COLOR_RED)
+        curses.init_pair(2, curses.COLOR_WHITE,curses.COLOR_WHITE)
+        curses.init_pair(3, curses.COLOR_WHITE,curses.COLOR_RED)
+        curses.init_pair(4, curses.COLOR_BLACK,curses.COLOR_WHITE)
+        curses.init_pair(5, curses.COLOR_BLACK,curses.COLOR_BLUE)
+        curses.init_pair(6, curses.COLOR_BLACK,curses.COLOR_GREEN)
+      curses.curs_set(0) 
+      curses.noecho()
+      simulation()
+      # curses.reset_shell_mode()
+  finally:
+    enablePrint()
+    curses.endwin()
  
