@@ -5,4 +5,7 @@ if __name__ == "__main__":
     from ReplayGame import *
   finally:
     print(">>Launcher stop")
-    curses.endwin()
+    try:
+      curses.endwin()
+    except curses.error:
+      print("Endwin skipped")

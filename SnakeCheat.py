@@ -7,6 +7,7 @@ import random
 import curses
 import Algofind
 
+CURSES_ON = False
 def blockPrint():
   sys.stdout = open(os.devnull, 'w')
 def enablePrint():
@@ -23,6 +24,7 @@ def menu():
     makefile()
     return 1
   elif arise == "2":
+    CURSES_ON = True
     blockPrint()
     makefile(True)
     return 2
@@ -232,5 +234,6 @@ if __name__ == "__main__":
       # curses.reset_shell_mode()
   finally:
     enablePrint()
-    curses.endwin()
+    if CURSES_ON:
+      curses.endwin()
  
