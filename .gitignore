@@ -1,0 +1,6 @@
+__pycache__/
+__pycache__/*
+ImprovedSnake/__pycache__/
+ImprovedSnake/__pycache__/*
+*.pyc
+Snake.log

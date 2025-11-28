@@ -113,10 +113,7 @@ def simulation(vis=True):
         terrain = mapmap(sw, sh, inverse=True)
         coord = list(initial)
         weights = {}
-        weights["Left"]= algo.path_plan(terrain, initial, "Left")
-        weights["Right"] = algo.path_plan(terrain, initial, "Right")
-        weights["Down"] = algo.path_plan(terrain, initial, "Down")
-        weights["Up"] = algo.path_plan(terrain, initial, "Up")
+        weights = algo.path_plan(terrain, initial)
         most_weight = max(weights, key=weights.get)
         if most_weight == "Down":
           change = coord[0] + 1
@@ -200,7 +197,7 @@ def simulation(vis=True):
         prev_cord = cord
         file.write(f"snake_bod: {snake_body}\n")
         file.write(f"Food: {food}\n")
-      time_taken = time.time() - start
+      time_taken = (time.time() - start) * 1000
       print("Time taken:", round(time_taken, 2), "ms")
       #print("New event soon")
           #print(f"Registered: {new_head}")

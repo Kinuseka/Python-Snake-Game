@@ -87,7 +87,7 @@ def MainMenu():
           w2.border('|', '|', '-', '-', '+', '+', '+', '+')
           while True:
             key2 = w2.getch()
-            w2.addstr(sh//8,sw//4,"Game Data existing\n,do you want to continue?",curses.color_pair(1) | curses.A_BOLD)
+            w2.addstr(sh//8,sw//4,"Game Data existing, do you want to continue?",curses.color_pair(1) | curses.A_BOLD)
             w2.addch(initial_select[0],initial_select[1],">",curses.color_pair(2) | curses.A_BLINK)
             w2.addstr(start_button[0],start_button[1],"Yes",curses.color_pair(1) | curses.A_BOLD)
             w2.addstr(exit_button[0],exit_button[1],"No",curses.color_pair(1) | curses.A_BOLD)
